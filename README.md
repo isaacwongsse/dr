@@ -1,2 +1,2 @@
-# dr
-It is a simple record
+# dailyRecord
+Every day photo record in project

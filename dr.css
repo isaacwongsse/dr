@@ -1,0 +1,1579 @@
+/* Daily Record – base styles (shared across devices) */
+/* Earth tone theme for UI only; .container and .page stay white */
+:root {
+    --earth-bg: #e8e4df;
+    --earth-bg-panel: #e2ddd5;
+    --earth-bg-title: #d8d2c8;
+    --earth-bg-list: #e5e0d8;
+    --earth-border: #c4b8a8;
+    --earth-border-light: #d4cfc4;
+    --earth-accent: #8b7355;
+    --earth-accent-hover: #7a6348;
+    --earth-text: #5c4a3a;
+    --earth-text-muted: #7d6b5c;
+    --earth-dragover: #d8d2c4;
+    --earth-thumb-bg: #ddd6cc;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    height: 100%;
+    overflow: hidden;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: var(--earth-bg);
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    min-height: 100vh;
+    overflow: hidden;
+}
+
+/* Wrapper for uniform scale-to-fit; dimensions set by JS */
+.container-scale-wrapper {
+    position: relative;
+    overflow: hidden;
+    min-width: 0;
+    flex-shrink: 0;
+    margin: 0 auto;
+}
+
+.container {
+    width: 210mm;
+    min-width: 210mm;
+    margin: 0 auto;
+    background: white;
+    padding: 0;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    box-sizing: border-box;
+    transform-origin: top left;
+}
+
+.page {
+    width: 210mm;
+    max-width: 100%;
+    min-width: 0;
+    height: auto;
+    min-height: 0;
+    max-height: none;
+    box-sizing: border-box;
+    background: white;
+    padding: 40px;
+    margin-bottom: 20px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    page-break-after: always;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+@media print {
+    @page {
+        size: A4;
+        margin: 0.1in;
+    }
+    
+    html, body {
+        background: white !important;
+        padding: 0;
+        margin: 0;
+        width: 100%;
+        height: auto !important;
+        min-height: 100%;
+        overflow: visible !important;
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        color-adjust: exact !important;
+    }
+    
+    /* Allow all pages to flow for print – no extra space above/below */
+    .app-layout {
+        height: auto !important;
+        min-height: 0 !important;
+        overflow: visible !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+    
+    .app-main {
+        overflow: visible !important;
+        height: auto !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+    
+    body {
+        display: block !important;
+        padding: 0 !important;
+        margin: 0 !important;
+    }
+    
+    .container-scale-wrapper {
+        width: auto !important;
+        height: auto !important;
+        min-height: 0 !important;
+    }
+
+    .container {
+        box-shadow: none;
+        padding: 0 !important;
+        margin: 0 !important;
+        width: 100%;
+        max-width: 100%;
+        position: static !important;
+        left: auto !important;
+        top: auto !important;
+        transform: none !important;
+        height: auto !important;
+    }
+    
+    .page {
+        box-shadow: none;
+        margin: 0 !important;
+        padding: 40px;
+        background: white !important;
+        height: auto;
+        max-height: none !important;
+        overflow: visible !important;
+    }
+
+    .container > .page:not(:last-child) {
+        page-break-after: always !important;
+    }
+
+    .container > .page:last-child {
+        page-break-after: avoid !important;
+        break-after: avoid !important;
+    }
+    
+    .controls {
+        display: none !important;
+    }
+    
+    .no-print {
+        display: none !important;
+    }
+    
+    .location-plan-controls {
+        display: none !important;
+    }
+    
+    .add-row-btn {
+        display: none !important;
+    }
+    
+    .remove-photo {
+        display: none !important;
+    }
+    
+    /* Hide empty photo slots (no image uploaded) in print */
+    .photo-item:has(.photo-upload:not(.has-photo)) {
+        display: none !important;
+    }
+    
+    /* Ensure colors print */
+    .project-info td,
+    .project-info th,
+    .worker-table th,
+    .worker-table td,
+    .photo-item,
+    .photo-label,
+    .location-plan h3 {
+        -webkit-print-color-adjust: exact !important;
+        print-color-adjust: exact !important;
+        color-adjust: exact !important;
+    }
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 24px;
+    padding-bottom: 10px;
+}
+
+.editable {
+    padding: 5px;
+    min-height: 20px;
+    cursor: text;
+}
+
+.editable:focus {
+    outline: 2px solid #4CAF50;
+}
+
+.project-info {
+    margin-bottom: 30px;
+}
+
+.project-info table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
+    line-height: 1.25;
+}
+
+.project-info td {
+    padding: 6px;
+    overflow: hidden;
+    vertical-align: middle;
+}
+
+.project-info td:first-child {
+    font-weight: bold;
+    width: 150px;
+}
+
+.location-plan {
+    margin-bottom: 30px;
+    border: 1px solid #333;
+    min-height: 400px;
+    position: relative;
+}
+
+.location-plan h3 {
+    background: #333;
+    color: white;
+    padding: 10px;
+    margin: 0;
+}
+
+.drawing-container {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    min-height: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f9f9f9;
+    position: relative;
+    overflow: hidden;
+}
+
+.drawing-upload {
+    border: 2px dashed #ccc;
+    padding: 40px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.drawing-upload:hover {
+    border-color: #4CAF50;
+    background: #f0f0f0;
+}
+
+.drawing-upload.dragover {
+    border-color: #4CAF50;
+    background: #e8f5e9;
+}
+
+.drawing-canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+    cursor: move;
+    transform-origin: center center;
+}
+
+.drawing-context-menu {
+    position: fixed;
+    z-index: 2000;
+    background: var(--earth-bg-panel);
+    border: 1px solid var(--earth-border);
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    padding: 4px 0;
+    min-width: 120px;
+    display: none;
+    font-family: Arial, sans-serif;
+}
+
+.drawing-context-menu button {
+    display: block;
+    width: 100%;
+    padding: 8px 14px;
+    border: none;
+    background: none;
+    text-align: left;
+    font-size: 13px;
+    cursor: pointer;
+    color: var(--earth-text);
+    transition: background-color 0.2s;
+}
+
+.drawing-context-menu button:hover {
+    background: var(--earth-border-light);
+}
+
+.drawing-context-menu button.remove-drawing-btn {
+    color: #c62828;
+}
+
+.drawing-context-menu button.remove-drawing-btn:hover {
+    background: #ffebee;
+}
+
+.project-context-menu {
+    position: fixed;
+    z-index: 2000;
+    background: var(--earth-bg-panel);
+    border: 1px solid var(--earth-border);
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    padding: 4px 0;
+    min-width: 120px;
+    display: none;
+    font-family: Arial, sans-serif;
+}
+
+.project-context-menu button {
+    display: block;
+    width: 100%;
+    padding: 8px 14px;
+    border: none;
+    background: none;
+    text-align: left;
+    font-size: 13px;
+    cursor: pointer;
+    color: var(--earth-text);
+    transition: background-color 0.2s;
+}
+
+.project-context-menu button:hover {
+    background: var(--earth-border-light);
+}
+
+.project-context-menu button.delete-btn {
+    color: #c62828;
+}
+
+.project-context-menu button.delete-btn:hover {
+    background: #ffebee;
+}
+
+.worker-table {
+    margin-bottom: 30px;
+}
+
+.worker-table h3 {
+    margin-bottom: 10px;
+}
+
+.worker-table table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #333;
+    font-size: 12px;
+    line-height: 1.25;
+}
+
+.worker-table th,
+.worker-table td {
+    border: 1px solid #333;
+    padding: 5px;
+    text-align: center;
+    overflow: hidden;
+    vertical-align: middle;
+}
+
+.worker-table th {
+    background: #f9f9f9;
+    font-weight: bold;
+}
+
+.worker-table input {
+    width: 100%;
+    border: none;
+    padding: 3px;
+    text-align: center;
+    background: transparent;
+    font-size: 12px;
+    line-height: 1.25;
+    box-sizing: border-box;
+}
+
+.worker-table input:focus {
+    outline: 2px solid #4CAF50;
+    background: white;
+}
+
+.add-row-btn {
+    margin-top: 10px;
+    padding: 8px 16px;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.add-row-btn:hover {
+    background: #45a049;
+}
+
+.worker-table tbody tr {
+    position: relative;
+}
+
+.worker-row-delete-btn {
+    position: fixed;
+    z-index: 1500;
+    padding: 6px 12px;
+    font-size: 12px;
+    background: #f44336;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    display: none;
+}
+
+.worker-row-delete-btn:hover {
+    background: #d32f2f;
+}
+
+.photo-page-header {
+    text-align: left;
+    font-size: 20px;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #333;
+}
+
+.photo-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 0;
+    max-width: 100%;
+}
+
+.photo-item {
+    border: 1px solid #333;
+}
+
+/* Height so 3 rows fit in A4 page (297mm) without scroll: (297mm - 80px padding - 2 gaps - 3 labels) / 3 ≈ 250px */
+.photo-upload {
+    min-height: 250px;
+    height: 250px;
+    border: 2px dashed #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background: #f9f9f9;
+    position: relative;
+    overflow: hidden;
+}
+
+.photo-upload:hover {
+    border-color: #4CAF50;
+    background: #f0f0f0;
+}
+
+.photo-upload.dragover {
+    border-color: #4CAF50;
+    background: #e8f5e9;
+}
+
+.photo-upload img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+}
+
+/* No dashed border when photo is uploaded */
+.photo-upload:has(img) {
+    border: none;
+}
+
+.photo-label {
+    text-align: center;
+    padding: 10px;
+    background: #f9f9f9;
+    border-top: 1px solid #333;
+    font-weight: bold;
+}
+
+.controls {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 12px;
+    z-index: 1000;
+    pointer-events: none;
+}
+
+.controls .controls-btn {
+    pointer-events: auto;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 18px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+}
+
+.controls .controls-btn:hover {
+    opacity: 0.9;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.3);
+}
+
+.controls .print-btn {
+    background: #6b8e6b;
+}
+
+.controls .print-btn:hover {
+    background: #5a7a5a;
+}
+
+.controls .add-page-btn {
+    background: var(--earth-accent);
+}
+
+.controls .add-page-btn:hover {
+    background: var(--earth-accent-hover);
+}
+
+.controls .delete-page-btn {
+    background: #a0675a;
+}
+
+.controls .delete-page-btn:hover {
+    background: #8a564a;
+}
+
+input[type="file"] {
+    display: none;
+}
+
+.placeholder-text {
+    color: #999;
+    font-size: 14px;
+}
+
+.remove-photo {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background: #f44336;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 1;
+    display: none;
+}
+
+.photo-upload:hover .remove-photo {
+    display: block;
+}
+
+.remove-photo:hover {
+    background: #d32f2f;
+}
+
+.project-info input[type="date"] {
+    width: 100%;
+    padding: 2px 4px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 12px;
+    font-family: inherit;
+    box-sizing: border-box;
+}
+
+.project-info input[type="date"]:focus {
+    outline: 2px solid #4CAF50;
+    border-color: #4CAF50;
+}
+
+.inspection-date-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.inspection-date-wrap input[type="date"] {
+    width: auto;
+    min-width: 140px;
+}
+
+#inspectionDateWeekday {
+    color: #333;
+    font-size: 14px;
+}
+
+/* Layout: left photo panel + main A4 area; separate scrolls – earth tone UI */
+.app-layout {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    height: 100%;
+    min-height: 100vh;
+    overflow: hidden;
+    background: var(--earth-bg);
+}
+
+.photo-panel {
+    width: 50%;
+    flex-shrink: 0;
+    background: var(--earth-bg-panel);
+    border-right: 1px solid var(--earth-border);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 2px 0 8px rgba(0,0,0,0.06);
+    min-height: 0;
+}
+
+.photo-panel-title {
+    padding: 12px 16px;
+    font-size: 16px;
+    font-weight: bold;
+    border-bottom: 1px solid var(--earth-border-light);
+    background: var(--earth-bg-title);
+    color: var(--earth-text);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.photo-panel-title-left {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.photo-panel-function-btn {
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 1px solid var(--earth-border);
+    border-radius: 6px;
+    background: var(--earth-bg-title);
+    color: var(--earth-text);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+}
+
+.photo-panel-function-btn:hover {
+    background: var(--earth-border-light);
+    color: var(--earth-accent);
+}
+
+.photo-panel-function-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    margin-top: 4px;
+    background: var(--earth-bg-panel);
+    border: 1px solid var(--earth-border);
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    min-width: 160px;
+    z-index: 1000;
+    display: none;
+    padding: 6px 0;
+}
+
+.photo-panel-function-dropdown.show {
+    display: block;
+}
+
+.photo-panel-function-dropdown-item {
+    display: block;
+    width: 100%;
+    padding: 8px 14px;
+    border: none;
+    background: none;
+    text-align: left;
+    font-size: 13px;
+    cursor: pointer;
+    color: var(--earth-text);
+    transition: background-color 0.2s;
+}
+
+.photo-panel-function-dropdown-item:hover {
+    background: var(--earth-border-light);
+}
+
+.photo-panel-title-actions {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.photo-panel-title .project-btn {
+    height: 30px;
+    padding: 0 14px;
+    box-sizing: border-box;
+    font-size: 13px;
+    font-weight: bold;
+    border: 1px solid var(--earth-accent);
+    border-radius: 15px;
+    background: var(--earth-bg-title);
+    color: var(--earth-accent);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.photo-panel-title .project-btn:hover {
+    background: var(--earth-border-light);
+}
+
+.project-dropdown {
+position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 4px;
+    background: var(--earth-bg-panel);
+    border: 1px solid var(--earth-border);
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    min-width: 280px;
+    max-width: 350px;
+    z-index: 1000;
+    display: none;
+    padding: 8px 0;
+}
+
+.project-dropdown.show {
+    display: block;
+}
+
+.project-dropdown-item-container {
+    padding: 4px 0;
+}
+
+.project-dropdown-item-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 14px;
+}
+
+.project-dropdown-item {
+    flex: 1;
+    padding: 8px 0;
+    border: none;
+    background: none;
+    text-align: left;
+    font-size: 13px;
+    cursor: pointer;
+    color: var(--earth-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+}
+
+.project-dropdown-item:hover {
+    background: transparent;
+}
+
+.project-dropdown-actions {
+    display: flex;
+    gap: 4px;
+    margin-left: 8px;
+}
+
+.project-dropdown-edit-btn,
+.project-dropdown-delete-btn {
+    padding: 4px 6px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 12px;
+    border-radius: 3px;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.project-dropdown-edit-btn:hover,
+.project-dropdown-delete-btn:hover {
+    opacity: 1;
+    background: var(--earth-border-light);
+}
+
+.project-dropdown-edit-btn {
+    color: var(--earth-accent);
+}
+
+.project-dropdown-delete-btn {
+    color: #c62828;
+}
+
+.project-dropdown-divider {
+    border: none;
+    border-top: 1px solid var(--earth-border);
+    margin: 8px 0;
+}
+
+.manage-projects-btn {
+    color: var(--earth-accent);
+    font-weight: bold;
+    display: block;
+    width: 100%;
+    padding: 10px 14px;
+    border: none;
+    background: none;
+    text-align: left;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.manage-projects-btn:hover {
+    background: var(--earth-border-light);
+}
+
+/* Project Management Modal */
+.project-management-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3000;
+    display: none;
+}
+
+.project-management-modal.show {
+    display: flex;
+}
+
+.project-management-content {
+    background: white;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 1200px;
+    max-height: 90vh;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.project-management-header {
+    background: var(--earth-accent);
+    color: white;
+    padding: 16px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.project-management-header h3 {
+    margin: 0;
+    font-size: 18px;
+}
+
+.project-management-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+}
+
+.project-management-close:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.project-management-body {
+    padding: 20px;
+    overflow-y: auto;
+    max-height: calc(90vh - 120px);
+}
+
+/* Project Management Modal Layout */
+.project-management-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+}
+
+.project-management-left {
+    display: flex;
+    flex-direction: column;
+}
+
+.project-management-right {
+    display: flex;
+    flex-direction: column;
+}
+
+.project-management-section {
+    margin-bottom: 30px;
+}
+
+.project-management-section h4 {
+    margin-bottom: 16px;
+    color: var(--earth-text);
+    font-size: 16px;
+    border-bottom: 1px solid var(--earth-border);
+    padding-bottom: 8px;
+}
+
+/* Location Plan in Modal */
+.project-management-location-plan {
+    border: 1px solid var(--earth-border);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.project-management-location-plan .location-plan {
+    margin-bottom: 0;
+    border: none;
+    /* 與主頁面 location-plan 一樣使用比例控制高度，以利縮放一致 */
+    min-height: 0;
+}
+
+.project-management-location-plan .drawing-container {
+    /* 與主頁面的 drawing-container 對齊：用 16:9 比例控制顯示大小 */
+    height: auto;
+    aspect-ratio: 16 / 9;
+    min-height: 0;
+}
+
+/* File inputs for modal */
+.project-management-file-inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 16px;
+}
+
+.project-file-input-wrap {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.project-file-input-label {
+    font-weight: bold;
+    color: var(--earth-text);
+    font-size: 14px;
+    min-width: 120px;
+}
+
+.project-file-input-btn {
+    padding: 8px 16px;
+    background: var(--earth-accent);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.project-file-input-btn:hover {
+    background: var(--earth-accent-hover);
+}
+
+.project-file-input-name {
+    font-size: 12px;
+    color: var(--earth-text-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 200px;
+}
+
+.project-list {
+    margin-bottom: 20px;
+}
+
+.project-list-empty {
+    text-align: center;
+    color: var(--earth-text-muted);
+    padding: 20px;
+    font-style: italic;
+}
+
+.project-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    border: 1px solid var(--earth-border-light);
+    border-radius: 6px;
+    margin-bottom: 8px;
+    background: var(--earth-bg-panel);
+}
+
+.project-item:hover {
+    background: var(--earth-border-light);
+}
+
+.project-item-info {
+    flex: 1;
+}
+
+.project-item-name {
+    font-weight: bold;
+    margin-bottom: 4px;
+    color: var(--earth-text);
+}
+
+.project-item-details {
+    font-size: 12px;
+    color: var(--earth-text-muted);
+}
+
+.project-item-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.project-action-btn {
+    padding: 6px 12px;
+    border: 1px solid var(--earth-border);
+    border-radius: 4px;
+    background: white;
+    color: var(--earth-text);
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.project-action-btn:hover {
+    background: var(--earth-border-light);
+}
+
+.project-action-btn.delete {
+    color: #c62828;
+    border-color: #c62828;
+}
+
+.project-action-btn.delete:hover {
+    background: #ffebee;
+}
+
+.project-form {
+    border-top: 1px solid var(--earth-border);
+    padding-top: 20px;
+}
+
+.project-form h4 {
+    margin-bottom: 16px;
+    color: var(--earth-text);
+}
+
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: bold;
+    color: var(--earth-text);
+    font-size: 14px;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid var(--earth-border);
+    border-radius: 4px;
+    font-size: 14px;
+    font-family: inherit;
+    box-sizing: border-box;
+}
+
+.form-group textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.form-actions button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.cancel-btn {
+    background: var(--earth-bg-panel);
+    color: var(--earth-text);
+}
+
+.save-btn {
+    background: var(--earth-accent);
+    color: white;
+}
+
+.save-btn:hover {
+    background: var(--earth-accent-hover);
+}
+
+.cancel-btn:hover {
+    background: var(--earth-border-light);
+}
+
+.photo-panel-resize-handle {
+    width: 8px;
+    margin: 0 6px;
+    flex-shrink: 0;
+    background: var(--earth-border);
+    cursor: col-resize;
+    position: relative;
+    user-select: none;
+}
+
+.photo-panel-resize-handle:hover {
+    background: var(--earth-accent);
+}
+
+.photo-panel-resize-handle::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    margin-left: -1px;
+    background: rgba(0,0,0,0.2);
+}
+
+.photo-panel-title .add-photos-btn {
+    height: 30px;
+    padding: 0 14px;
+    box-sizing: border-box;
+    font-size: 13px;
+    font-weight: bold;
+    border: 1px solid var(--earth-accent);
+    border-radius: 15px;
+    background: var(--earth-bg-title);
+    color: var(--earth-accent);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.photo-panel-title .add-photos-btn:hover {
+    background: var(--earth-border-light);
+}
+
+.photo-panel-list-wrap {
+    flex: 1 1 0;
+    min-height: 0;
+    min-width: 0;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.photo-panel-list-empty-hint {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    margin: 0;
+    padding: 0 16px;
+    pointer-events: none;
+    color: var(--earth-text-muted);
+    font-size: 14px;
+    text-align: center;
+    line-height: 1.4;
+}
+
+.photo-panel-list-empty-hint.hidden {
+    display: none;
+}
+
+/* Square thumbnails; size scales with panel width (10px gap); min size from --photo-thumb-min (slider) */
+.photo-panel-list {
+    --photo-thumb-min: 80px;
+    flex: 1 1 0;
+    min-width: 0;
+    min-height: 0;
+    width: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 12px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(var(--photo-thumb-min), 1fr));
+    grid-auto-rows: auto;
+    row-gap: 10px;
+    column-gap: 10px;
+    align-content: start;
+    justify-content: start;
+    transition: background 0.15s, box-shadow 0.15s;
+    contain: layout;
+}
+
+.photo-panel-list.dragover {
+    background: var(--earth-dragover);
+    box-shadow: inset 0 0 0 2px var(--earth-accent);
+}
+
+/* padding-bottom: 100% makes row height = cell width so row-gap stays 10px (aspect-ratio + auto rows can mis-size in some browsers) */
+.photo-panel-thumb {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 100%;
+    height: 0;
+    padding-bottom: 100%;
+    border: 1px solid var(--earth-border-light);
+    border-radius: 6px;
+    overflow: hidden;
+    cursor: grab;
+    background: var(--earth-thumb-bg);
+    position: relative;
+    min-width: 0;
+}
+
+.photo-panel-thumb:active {
+    cursor: grabbing;
+}
+
+.photo-panel-thumb img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+    pointer-events: none;
+}
+
+/* Quick Dispatch: dispatched photo in panel */
+.photo-panel-thumb.dispatched {
+    border: 3px solid #2e7d32;
+    box-shadow: 0 0 0 1px #2e7d32;
+}
+
+.photo-panel-thumb .dispatch-slot-badge {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    background: transparent;
+    color: #2e7d32;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 2px 6px;
+    border-radius: 4px;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.photo-panel-thumb-size {
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--earth-border-light);
+    background: var(--earth-bg-title);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.photo-thumb-size-row {
+    width: 250px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.photo-panel-thumb-size .photo-thumb-size-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--earth-text);
+}
+
+.photo-panel-thumb-size .photo-thumb-size-slider {
+    width: 250px;
+    height: 8px;
+    accent-color: var(--earth-accent);
+    cursor: pointer;
+}
+
+.photo-panel-thumb-size .photo-thumb-size-value {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--earth-accent);
+}
+
+.photo-panel-thumb-size .photo-thumb-size-unit {
+    font-size: 12px;
+    color: var(--earth-text-muted);
+    margin-left: 2px;
+}
+
+.photo-panel-thumb-size .quick-dispatch-hint-wrap {
+    display: block;
+}
+
+.photo-panel-title .quick-dispatch-btn {
+    height: 30px;
+    padding: 0 14px;
+    box-sizing: border-box;
+    border: 1px solid var(--earth-accent);
+    border-radius: 15px;
+    background: var(--earth-bg-title);
+    color: var(--earth-accent);
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 13px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.photo-panel-title .quick-dispatch-btn.active {
+    background: var(--earth-accent);
+    color: #fff;
+}
+
+.photo-panel-title .quick-dispatch-btn:hover {
+    opacity: 0.9;
+}
+
+.quick-dispatch-hint {
+    font-size: 12px;
+    color: #555;
+    margin-top: 8px;
+    line-height: 1.4;
+}
+
+.app-main-wrap {
+    flex: 1;
+    min-width: 0;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 70px;
+}
+
+.app-main {
+    flex: 1;
+    min-width: 0;
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+/* ============================================
+   Responsive: Mobile-first, then Tablet, Desktop
+   Breakpoints: mobile < 768px | tablet 768–1023px | desktop ≥ 1024px
+   ============================================ */
+
+/* Mobile (default for small screens, max-width: 767px) */
+@media screen and (max-width: 767px) {
+    body {
+        padding: 0;
+    }
+
+    .app-layout {
+        flex-direction: column;
+        height: auto;
+        min-height: 100vh;
+        overflow: visible;
+    }
+
+    .photo-panel-resize-handle {
+        display: none;
+    }
+
+    .photo-panel {
+        width: 100% !important;
+        max-height: 45vh;
+        min-height: 200px;
+        border-right: none;
+        border-bottom: 1px solid #ddd;
+        flex-shrink: 0;
+    }
+
+    .photo-panel-list {
+        grid-template-columns: repeat(auto-fill, minmax(var(--photo-thumb-min, 60px), 1fr));
+        padding: 8px;
+    }
+
+    .photo-panel-quick-dispatch .toggle-wrap {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .app-main {
+        padding: 10px;
+        overflow-y: visible;
+    }
+
+    .container {
+        width: 100%;
+        max-width: 100%;
+        padding: 0 8px;
+    }
+
+    .page {
+        padding: 20px;
+        min-height: auto;
+        height: auto;
+        margin-bottom: 16px;
+    }
+
+    h1 {
+        font-size: 20px;
+        margin-bottom: 20px;
+    }
+
+    .project-info td:first-child {
+        width: 110px;
+    }
+
+    .location-plan {
+        min-height: 280px;
+    }
+
+    .photo-grid {
+        gap: 12px;
+    }
+
+    .photo-upload {
+        min-height: 180px;
+        height: 180px;
+    }
+
+    .photo-label {
+        padding: 8px;
+        font-size: 13px;
+    }
+
+    .controls {
+        bottom: 16px;
+    }
+
+    .controls .controls-btn {
+        width: 45px;
+        height: 45px;
+        font-size: 18px;
+    }
+
+    .worker-table table {
+        font-size: 11px;
+    }
+
+    .worker-table th,
+    .worker-table td {
+        padding: 4px;
+    }
+}
+
+/* Tablet: 768px – 1023px */
+@media screen and (min-width: 768px) and (max-width: 1023px) {
+    body {
+        padding: 0;
+    }
+
+    .app-layout {
+        height: 100vh;
+    }
+
+    .photo-panel {
+        width: 42%;
+        flex-shrink: 0;
+    }
+
+    .photo-panel-list {
+        grid-template-columns: repeat(auto-fill, minmax(var(--photo-thumb-min, 80px), 1fr));
+    }
+
+    /* 20px space from photo panel and from right edge; content resizes to fit */
+    .app-main {
+        padding: 20px 20px 20px 20px;
+        box-sizing: border-box;
+    }
+
+    .container {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+
+    .page {
+        width: 100%;
+        max-width: 100%;
+        min-height: auto;
+        height: auto;
+        padding: 28px;
+        box-sizing: border-box;
+    }
+
+    /* Photo grid and slots scale to fit the area */
+    .photo-grid {
+        max-width: 100%;
+    }
+
+    .photo-upload {
+        min-height: 180px;
+        height: 180px;
+    }
+
+    .controls {
+        bottom: 16px;
+    }
+}
+
+/* Desktop: 1024px and up (current layout is already desktop-friendly) */
+@media screen and (min-width: 1024px) {
+    .photo-panel {
+        width: 50%;
+    }
+
+    .photo-panel-list {
+        grid-template-columns: repeat(auto-fill, minmax(var(--photo-thumb-min, 100px), 1fr));
+    }
+}

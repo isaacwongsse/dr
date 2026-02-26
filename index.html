@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Report Generator</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='4' fill='%232196F3'/%3E%3Crect x='8' y='6' width='16' height='2' rx='1' fill='white'/%3E%3Crect x='8' y='11' width='12' height='2' rx='1' fill='white' opacity='.8'/%3E%3Crect x='8' y='16' width='14' height='2' rx='1' fill='white' opacity='.6'/%3E%3C/svg%3E">
+    <link rel="stylesheet" href="dr.css?v=2">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <div class="app-layout">
+        <aside class="photo-panel no-print" id="photoPanel">
+            <div class="photo-panel-title">
+                <div class="photo-panel-title-left">
+                    <button type="button" class="photo-panel-function-btn no-print" id="photoPanelFunctionBtn" title="Settings" aria-haspopup="true" aria-expanded="false"><i class="fa-solid fa-sliders"></i></button>
+                    <div class="photo-panel-function-dropdown no-print" id="photoPanelFunctionDropdown" role="menu">
+                        <button type="button" class="photo-panel-function-dropdown-item" id="exportSettingBtn" role="menuitem">Export setting</button>
+                        <button type="button" class="photo-panel-function-dropdown-item" id="importSettingBtn" role="menuitem">Import setting</button>
+                    </div>
+                </div>
+                <span>Photo library</span>
+                <div class="photo-panel-title-actions">
+                    <button type="button" class="quick-dispatch-btn" id="quickDispatchBtn">Quick Dispatch</button>
+                    <button type="button" class="project-btn" id="projectBtn">Template</button>
+                    <div class="project-dropdown no-print" id="projectDropdown">
+                        <hr class="project-dropdown-divider">
+                        <button type="button" class="project-dropdown-item manage-projects-btn" id="manageProjectsBtn">Manage Templates</button>
+                    </div>
+                    <button type="button" class="add-photos-btn" id="addPhotosBtn">+ photos</button>
+                </div>
+            </div>
+            <div class="photo-panel-thumb-size">
+                <div class="photo-thumb-size-row">
+                    <label for="photoThumbSizeSlider" class="photo-thumb-size-label">Photo size</label>
+                    <span class="photo-thumb-size-value" id="photoThumbSizeValue">80</span><span class="photo-thumb-size-unit">px</span>
+                </div>
+                <input type="range" id="photoThumbSizeSlider" class="photo-thumb-size-slider" min="60" max="300" value="80" step="1" title="Resize thumbnails">
+                <div class="quick-dispatch-hint-wrap">
+                    <span class="quick-dispatch-hint" id="quickDispatchHint" style="display:none;">Double-click a photo in the preview area to automatically send it to the photo page containers in order. Double-click the last dispatched photo to undo the dispatch.</span>
+                </div>
+            </div>
+            <div class="photo-panel-list-wrap">
+                <div class="photo-panel-list" id="photoPanelList"></div>
+                <p class="photo-panel-list-empty-hint" id="photoPanelListEmptyHint">Drag and drop photos here to upload</p>
+            </div>
+        </aside>
+        <div class="photo-panel-resize-handle no-print" id="photoPanelResizeHandle" title="Drag to resize"></div>
+        <div class="app-main-wrap">
+            <main class="app-main" id="appMain">
+            <div class="container-scale-wrapper" id="containerScaleWrapper">
+            <div class="container" id="mainContainer">
+                <!-- Page 1: Main Report -->
+                <div class="page" id="page1">
+                    <h1 class="editable" contenteditable="true" id="header">Progress Photos Record</h1>
+
+                    <div class="project-info">
+                        <table>
+                            <tr>
+                                <td>Project Title:</td>
+                                <td class="editable" contenteditable="true" id="projectTitle"></td>
+                            </tr>
+                            <tr>
+                                <td>Location:</td>
+                                <td class="editable" contenteditable="true" id="location"></td>
+                            </tr>
+                            <tr>
+                                <td>Inspection Date:</td>
+                                <td class="inspection-date-wrap">
+                                    <input type="date" id="inspectionDate">
+                                    <span id="inspectionDateWeekday"></span>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="location-plan">
+                        <h3>Location Plan</h3>
+                        <div class="drawing-container" id="drawingContainer">
+                            <div class="drawing-upload" id="drawingUpload">
+                                <div class="placeholder-text">
+                                    <p>📄 Drag and drop PDF drawing here</p>
+                                    <p>or click to browse</p>
+                                </div>
+                            </div>
+                            <canvas id="drawingCanvas" class="drawing-canvas" style="display: none;"></canvas>
+                        </div>
+                    </div>
+                    <div class="drawing-context-menu no-print" id="drawingContextMenu">
+                        <button type="button" id="drawingMenuRotate">Rotate</button>
+                        <button type="button" id="drawingMenuReset">Reset</button>
+                        <button type="button" class="remove-drawing-btn" id="drawingMenuRemove">Remove</button>
+                    </div>
+
+                    <div class="worker-table">
+                        <h3 class="editable" contenteditable="true" id="workerTableHeader">Number of Workers</h3>
+                        <table id="workerTable">
+                            <thead>
+                                <tr>
+                                    <th>Worker category</th>
+                                    <th>Builder's Works</th>
+                                    <th>Building Services</th>
+                                </tr>
+                            </thead>
+                            <tbody id="workerTableBody">
+                                <tr><td><input type="text" value="" placeholder=""></td><td><input type="number" value=""></td><td><input type="number" value=""></td></tr>
+                                <tr><td><input type="text" value="" placeholder=""></td><td><input type="number" value=""></td><td><input type="number" value=""></td></tr>
+                                <tr><td><input type="text" value="" placeholder=""></td><td><input type="number" value=""></td><td><input type="number" value=""></td></tr>
+                                <tr><td><input type="text" value="" placeholder=""></td><td><input type="number" value=""></td><td><input type="number" value=""></td></tr>
+                                <tr><td><input type="text" value="" placeholder=""></td><td><input type="number" value=""></td><td><input type="number" value=""></td></tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th>Daily Total</th>
+                                    <th id="builderTotal">0</th>
+                                    <th id="servicesTotal">0</th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                        <button class="add-row-btn" onclick="addWorkerRow()">+ Add Row</button>
+                    </div>
+                </div>
+
+                <div class="page" id="photoPage1">
+                    <h2 class="photo-page-header">Progress Photos</h2>
+                    <div class="photo-grid" id="photoGrid1"></div>
+                </div>
+            </div>
+            </div>
+        </main>
+            <div class="controls no-print">
+                <button type="button" class="controls-btn print-btn" onclick="printReport()" title="Print Report"><i class="fa-solid fa-print"></i></button>
+                <button type="button" class="controls-btn add-page-btn" onclick="addPhotoPage()" title="Add Photo Page"><i class="fa-solid fa-file-circle-plus"></i></button>
+                <button type="button" class="controls-btn delete-page-btn" id="deletePhotoPageBtn" onclick="deleteLastPhotoPage()" title="Cannot delete first or second page"><i class="fa-solid fa-file-circle-minus"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <button type="button" class="worker-row-delete-btn no-print" id="workerRowDeleteBtn">Delete</button>
+    <div class="project-context-menu no-print" id="projectContextMenu">
+        <button type="button" id="projectMenuEdit">Edit</button>
+        <button type="button" class="delete-btn" id="projectMenuDelete">Delete</button>
+    </div>
+
+    <input type="file" id="drawingFileInput" accept=".pdf">
+    <input type="file" id="photoFileInput" accept="image/*" multiple>
+    <input type="file" id="photoPanelFileInput" accept="image/*" multiple style="display:none">
+    <input type="file" id="importSettingFileInput" accept=".json,application/json" style="display:none">
+    <!-- Template Management Modal File Inputs -->
+    <input type="file" id="projectDrawingFileInput" accept=".pdf" style="display:none">
+
+    <!-- Template Management Modal -->
+    <div class="project-management-modal no-print" id="projectManagementModal">
+        <div class="project-management-content">
+            <div class="project-management-header">
+                <h3>Template Management</h3>
+                <button type="button" class="project-management-close" id="projectManagementClose">×</button>
+            </div>
+            <div class="project-management-body">
+                <div class="project-management-layout">
+                    <div class="project-management-left">
+                        <div class="project-form">
+                            <h4>Create New Template</h4>
+                            <div class="form-group">
+                                <label for="projectName">Template Name *</label>
+                                <input type="text" id="projectName" placeholder="Enter template name" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="projectHeader">Report Header</label>
+                                <input type="text" id="projectHeader" placeholder="Progress Photos Record">
+                            </div>
+                            <div class="form-group">
+                                <label for="projectTitle">Project Title</label>
+                                <input type="text" id="projectTitleInput" placeholder="Project title for reports">
+                            </div>
+                            <div class="form-group">
+                                <label for="projectLocation">Location</label>
+                                <input type="text" id="projectLocation" placeholder="Project location">
+                            </div>
+                            <div class="project-management-file-inputs">
+                                <div class="project-file-input-wrap">
+                                    <span class="project-file-input-label">Location Plan PDF:</span>
+                                    <button type="button" class="project-file-input-btn" id="projectDrawingFileBtn">Select PDF</button>
+                                    <span class="project-file-input-name" id="projectDrawingFileName">No file selected</span>
+                                </div>
+                            </div>
+                            <div class="form-actions">
+                                <button type="button" class="cancel-btn" id="cancelProjectBtn">Cancel</button>
+                                <button type="button" class="save-btn" id="saveProjectBtn">Save Template</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="project-management-right">
+                        <div class="project-management-section">
+                            <h4>Location Plan Preview</h4>
+                            <div class="project-management-location-plan">
+                                <div class="location-plan">
+                                    <h3>Location Plan</h3>
+                                    <div class="drawing-container" id="projectDrawingContainer">
+                                        <div class="drawing-upload" id="projectDrawingUpload">
+                                            <div class="placeholder-text">
+                                                <p>📄 Drag and drop PDF drawing here</p>
+                                                <p>or click to browse</p>
+                                            </div>
+                                        </div>
+                                        <canvas id="projectDrawingCanvas" class="drawing-canvas" style="display: none;"></canvas>
+                                    </div>
+                                </div>
+                                <div class="drawing-context-menu no-print" id="projectDrawingContextMenu">
+                                    <button type="button" id="projectDrawingMenuRotate">Rotate</button>
+                                    <button type="button" id="projectDrawingMenuReset">Reset</button>
+                                    <button type="button" class="remove-drawing-btn" id="projectDrawingMenuRemove">Remove</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/exif-js@2.3.0/exif.js"></script>
+    <script src="dr.js?v=2"></script>
+    <script type="module" src="database.js"></script>
+</body>
+</html>
