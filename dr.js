@@ -66,17 +66,30 @@ initializePhotoPage(1);
 // Worker table calculations
 function updateWorkerTotals() {
     const rows = document.querySelectorAll('#workerTableBody tr');
-    let builderTotal = 0;
-    let servicesTotal = 0;
+    let builderAmTotal = 0;
+    let builderPmTotal = 0;
+    let servicesAmTotal = 0;
+    let servicesPmTotal = 0;
 
     rows.forEach(row => {
         const inputs = row.querySelectorAll('input[type="number"]');
-        builderTotal += parseInt(inputs[0].value) || 0;
-        servicesTotal += parseInt(inputs[1].value) || 0;
+        if (inputs.length >= 4) {
+            builderAmTotal += parseInt(inputs[0].value) || 0;
+            builderPmTotal += parseInt(inputs[1].value) || 0;
+            servicesAmTotal += parseInt(inputs[2].value) || 0;
+            servicesPmTotal += parseInt(inputs[3].value) || 0;
+        }
     });
 
-    document.getElementById('builderTotal').textContent = builderTotal;
-    document.getElementById('servicesTotal').textContent = servicesTotal;
+    const builderAmEl = document.getElementById('builderAmTotal');
+    const builderPmEl = document.getElementById('builderPmTotal');
+    const servicesAmEl = document.getElementById('servicesAmTotal');
+    const servicesPmEl = document.getElementById('servicesPmTotal');
+
+    if (builderAmEl) builderAmEl.textContent = builderAmTotal;
+    if (builderPmEl) builderPmEl.textContent = builderPmTotal;
+    if (servicesAmEl) servicesAmEl.textContent = servicesAmTotal;
+    if (servicesPmEl) servicesPmEl.textContent = servicesPmTotal;
 }
 
 // Add event listeners to worker inputs
@@ -96,6 +109,8 @@ function addWorkerRow() {
     const row = document.createElement('tr');
     row.innerHTML = `
         <td><input type="text" placeholder="" /></td>
+        <td><input type="number" value="" /></td>
+        <td><input type="number" value="" /></td>
         <td><input type="number" value="" /></td>
         <td><input type="number" value="" /></td>
     `;
